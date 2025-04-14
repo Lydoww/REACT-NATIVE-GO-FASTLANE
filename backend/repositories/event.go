@@ -35,14 +35,14 @@ func (r *EventRepository) GetOne(ctx context.Context, eventId uint) (*models.Eve
 	return event, nil
 }
 
-func (r *EventRepository) CreateOne(ctx context.Context, event models.Event) (*models.Event, error) {
-	res := r.db.Model(&event).Create(&event)
+func (r *EventRepository) CreateOne(ctx context.Context, event *models.Event) (*models.Event, error) {
+	res := r.db.Model(event).Create(event)
 
 	if res.Error != nil {
 		return nil, res.Error
 	}
 
-	return &event, nil
+	return event, nil
 }
 
 func (r *EventRepository) UpdateOne(ctx context.Context, eventId uint, updateData map[string]interface{}) (*models.Event, error) {
@@ -72,4 +72,4 @@ func NewEventRepository(db *gorm.DB) models.EventRepository {
 	return &EventRepository{
 		db: db,
 	}
-} 
+}

@@ -14,73 +14,76 @@ type EventHandler struct {
 }
 
 func (h *EventHandler) GetMany(ctx *fiber.Ctx) error {
-	context, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	context, cancel := context.WithTimeout(context.Background(), time.Duration(5*time.Second))
 	defer cancel()
 
 	events, err := h.repository.GetMany(context)
+
 	if err != nil {
-		return ctx.Status(fiber.StatusBadGateway).JSON(fiber.Map{
-			"status": "fail",
+		return ctx.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
+			"status":  "fail",
 			"message": err.Error(),
 		})
 	}
 
-	return ctx.Status(fiber.StatusOK).JSON(fiber.Map{
-		"status": "success",
+	return ctx.Status(fiber.StatusOK).JSON(&fiber.Map{
+		"status":  "success",
 		"message": "",
-		"data": events,
-})
+		"data":    events,
+	})
 }
 
 func (h *EventHandler) GetOne(ctx *fiber.Ctx) error {
-	eventId, _ := strconv.Atoi(ctx.Params("eventId")) 
+	eventId, _ := strconv.Atoi(ctx.Params("eventId"))
 
-	context, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	context, cancel := context.WithTimeout(context.Background(), time.Duration(5*time.Second))
 	defer cancel()
 
 	event, err := h.repository.GetOne(context, uint(eventId))
 
 	if err != nil {
-		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"status": "fail",
+		return ctx.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
+			"status":  "fail",
 			"message": err.Error(),
 		})
 	}
-	return ctx.Status(fiber.StatusOK).JSON(fiber.Map{
-		"status": "success",
+
+	return ctx.Status(fiber.StatusOK).JSON(&fiber.Map{
+		"status":  "success",
 		"message": "",
-		"data": event,
+		"data":    event,
 	})
 }
 
 func (h *EventHandler) CreateOne(ctx *fiber.Ctx) error {
 	event := &models.Event{}
 
-	context, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	context, cancel := context.WithTimeout(context.Background(), time.Duration(5*time.Second))
 	defer cancel()
 
 	if err := ctx.BodyParser(event); err != nil {
-		return ctx.Status(fiber.StatusUnprocessableEntity).JSON(fiber.Map{
-			"status": "fail",
+		return ctx.Status(fiber.StatusUnprocessableEntity).JSON(&fiber.Map{
+			"status":  "fail",
 			"message": err.Error(),
-			"data": nil,
+			"data":    nil,
 		})
 	}
 
-	event, err := h.repository.CreateOne(context, *event)
+	event, err := h.repository.CreateOne(context, event)
 
 	if err != nil {
-		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"status": "fail",
+		return ctx.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
+			"status":  "fail",
 			"message": err.Error(),
+			"data":    nil,
 		})
 	}
-	return ctx.Status(fiber.StatusCreated).JSON(fiber.Map{
-		"status": "success",
-		"message": "Event created successfully",
-		"data": event,
-	})
 
+	return ctx.Status(fiber.StatusCreated).JSON(&fiber.Map{
+		"status":  "success",
+		"message": "Event created",
+		"data":    event,
+	})
 }
 
 func (h *EventHandler) UpdateOne(ctx *fiber.Ctx) error {

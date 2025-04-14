@@ -22,6 +22,7 @@ func main() {
 	// Repository
 
 	eventRepository := repositories.NewEventRepository(db)
+	ticketRepository := repositories.NewTicketRepository(db)
 
 	// Router
 
@@ -29,6 +30,7 @@ func main() {
 
 	// Handler
 	handlers.NewEventHandler(server.Group("/event"), eventRepository)
+	handlers.NewTicketHandler(server.Group("/ticket"), ticketRepository)
 
 	fmt.Println("🚀 Fastlane server started on port 3000")
 	app.Listen(":" + envConfig.ServerPort)

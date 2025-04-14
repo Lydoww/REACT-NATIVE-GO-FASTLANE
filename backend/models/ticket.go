@@ -6,13 +6,14 @@ import (
 )
 
 type Ticket struct {
-	ID        uint      `json:"id" gorm:"primarykey"`
+	ID        uint      `json:"id" gorm:"primaryKey"`
 	EventID   uint      `json:"eventId"`
-	Event     Event     `json:"event" gorm:"foreignkey:EventId;contraint:CASCADE,onDelete:CASCADE;"`
-	Entered   bool      `json:"entered" default:"false"`
+	Event     Event     `json:"event" gorm:"foreignKey:EventID;references:ID;constraint:OnDelete:CASCADE,OnUpdate:CASCADE"`
+	Entered   bool      `json:"entered" gorm:"default:false"`
 	CreatedAt time.Time `json:"createdAt"`
 	UpdatedAt time.Time `json:"updatedAt"`
 }
+
 
 type TicketRepository interface {
 	GetMany(ctx context.Context) ([]*Ticket, error)

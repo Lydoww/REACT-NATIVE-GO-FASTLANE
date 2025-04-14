@@ -1,0 +1,70 @@
+version: "3.9"
+
+services:
+  app:
+    tty: true #keep the container running
+    restart: always #restart the container if it stops
+    image: fastlane
+    container_name: fastlane
+    build: .
+    ports:
+      - "3000:3000" #port mapping for the app
+    env_file:
+      - .env
+    networks:
+      - application
+    depends_on:
+      db:
+        condition: service_healthy #wait for the db to be healthy before starting the app
+    volumes:
+      - .:/src/app #mount the current directory to the container
+    command: air -c .air.toml
+
+  db:
+    image: postgres:alpine
+    container_name: fastlane_db
+    environment:
+      - POSTGRES_HOST=${DB_HOST}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+    ports:
+      - "5432:5432" #port mapping for the db
+    volumes:
+      - postgres-db:/var/lib/postgresql/data #mount the db data to the host
+    networks:
+      - application
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER}"]
+      interval: 10s #check every 10 seconds
+      timeout: 5s #timeout after 5 seconds
+      retries: 5 #retry 5 times before failing
+
+
+networks:
+  application:
+
+
+volumes:
+  postgres-db:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

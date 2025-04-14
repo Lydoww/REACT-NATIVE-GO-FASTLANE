@@ -1,12 +1,19 @@
 package main
 
 import (
+	"fmt"
+
+	"github.com/Lydoww/react-native-go-fastlane/config"
+	"github.com/Lydoww/react-native-go-fastlane/db"
 	"github.com/Lydoww/react-native-go-fastlane/handlers"
 	"github.com/Lydoww/react-native-go-fastlane/repositories"
 	"github.com/gofiber/fiber/v2"
 )
 
 func main() {
+	envConfig := config.NewEnvConfig()
+	db := db.Init(envConfig, db.DBMigrator)
+
 	app := fiber.New(fiber.Config{
 		AppName:      "Fastlane",
 		ServerHeader: "Fiber",
@@ -14,7 +21,7 @@ func main() {
 
 	// Repository
 
-	eventRepository := repositories.NewEventRepository(nil)
+	eventRepository := repositories.NewEventRepository(db)
 
 	// Router
 
@@ -23,5 +30,7 @@ func main() {
 	// Handler
 	handlers.NewEventHandler(server.Group("/event"), eventRepository)
 
-	app.Listen(":3000")
+	fmt.Println("🚀 Fastlane server started on port 3000")
+	app.Listen(":" + envConfig.ServerPort)
+
 }

@@ -20,3 +20,4 @@ type EventRepository interface {
 	GetOne(ctx context.Context, eventId string) (*Event, error)
 	CreateOne(ctx context.Context, event Event) (*Event, error)
 }
+

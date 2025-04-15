@@ -23,10 +23,17 @@ func main() {
 
 	eventRepository := repositories.NewEventRepository(db)
 	ticketRepository := repositories.NewTicketRepository(db)
+	authRepository := repositories.NewAuthRepository(db)
+	
+	// Service
+	authService := service.NewAuthService(authRepository)
 
 	// Router
 
 	server := app.Group("/api")
+	handlers.NewAuthHandler(server.Groupe("/auth"), authService)
+
+	privateRoutes := server.Use(middleware.AuthProtected(db))
 
 	// Handler
 	handlers.NewEventHandler(server.Group("/event"), eventRepository)

@@ -6,6 +6,7 @@ import (
 	"github.com/Lydoww/react-native-go-fastlane/config"
 	"github.com/Lydoww/react-native-go-fastlane/db"
 	"github.com/Lydoww/react-native-go-fastlane/handlers"
+	"github.com/Lydoww/react-native-go-fastlane/middlewares"
 	"github.com/Lydoww/react-native-go-fastlane/repositories"
 	"github.com/Lydoww/react-native-go-fastlane/services"
 	"github.com/gofiber/fiber/v2"
@@ -32,13 +33,13 @@ func main() {
 	// Router
 
 	server := app.Group("/api")
-	handlers.NewAuthHandler(server.Groupe("/auth"), authService)
+	handlers.NewAuthHandler(server.Group("/auth"), authService)
 
-	privateRoutes := server.Use(middleware.AuthProtected(db))
+	privateRoutes := server.Use(middlewares.AuthProtected(db))
 
 	// Handler
-	handlers.NewEventHandler(server.Group("/event"), eventRepository)
-	handlers.NewTicketHandler(server.Group("/ticket"), ticketRepository)
+	handlers.NewEventHandler(privateRoutes.Group("/event"), eventRepository)
+	handlers.NewTicketHandler(privateRoutes.Group("/ticket"), ticketRepository)
 
 	fmt.Println("🚀 Fastlane server started on port 3000")
 	app.Listen(":" + envConfig.ServerPort)

@@ -7,6 +7,7 @@ import (
 	"github.com/Lydoww/react-native-go-fastlane/db"
 	"github.com/Lydoww/react-native-go-fastlane/handlers"
 	"github.com/Lydoww/react-native-go-fastlane/repositories"
+	"github.com/Lydoww/react-native-go-fastlane/services"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -26,7 +27,7 @@ func main() {
 	authRepository := repositories.NewAuthRepository(db)
 	
 	// Service
-	authService := service.NewAuthService(authRepository)
+	authService := services.NewAuthService(authRepository)
 
 	// Router
 

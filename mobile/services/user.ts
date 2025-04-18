@@ -1,16 +1,12 @@
 import { AuthResponse } from "@/types/user";
 import { Api } from "./api";
 
-type Credentials = {
-  email: string;
-  password: string;
-};
-
-async function login(credentials: Credentials): Promise<AuthResponse> {
-  return Api.post("/auth/login", credentials);
+async function login(email: string, password: string): Promise<AuthResponse> {
+  return Api.post("/auth/login", { email, password });
 }
-async function register(credentials: Credentials): Promise<AuthResponse> {
-  return Api.post("/auth/register", credentials);
+
+async function register(email: string, password: string): Promise<AuthResponse> {
+  return Api.post("/auth/register", { email, password });
 }
 
 const userService = {

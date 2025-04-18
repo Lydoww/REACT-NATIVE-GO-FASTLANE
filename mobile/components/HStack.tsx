@@ -1,7 +1,12 @@
-import { Stack, StackProps } from "./Stack";
+import React from "react";
+import { Stack, StackProps } from "@/components/Stack";
 
-interface HStackProps extends StackProps {}
+interface HStackProps extends StackProps { }
 
 export function HStack(props: HStackProps) {
-  return <Stack {...props} direction="row" />;
+  return (
+    <Stack { ...props } direction="row">
+      { props.children }
+    </Stack>
+  );
 }
